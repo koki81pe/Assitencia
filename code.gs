@@ -1,10 +1,11 @@
 /**
  * ============================================
  * SISTEMA DE ASISTENCIA - CODE.GS
- * Versión: V1.01
+ * Versión: V1.02
  * Descripción: Backend del sistema de registro de asistencia
  * Autor: Jorge
  * Fecha: Diciembre 2025
+ * Changelog V1.02: Agregado cálculo de total pendiente en pestaña Estado
  * ============================================
  */
 
@@ -433,6 +434,7 @@ function obtenerRegistrosPendientes() {
     }
     
     const pendientes = [];
+    let totalPendiente = 0;
     
     for (let i = 1; i < datos.length; i++) {
       if (datos[i][0] && datos[i][1] && datos[i][2]) {
@@ -451,13 +453,16 @@ function obtenerRegistrosPendientes() {
             horasTrabajadas: horasTrabajadas.toFixed(2),
             monto: monto.toFixed(2)
           });
+          
+          totalPendiente += monto;
         }
       }
     }
     
     return {
       success: true,
-      pendientes: pendientes
+      pendientes: pendientes,
+      totalPendiente: totalPendiente.toFixed(2)
     };
   } catch (error) {
     Logger.log('Error en obtenerRegistrosPendientes: ' + error.message);
@@ -605,7 +610,7 @@ function obtenerFechaCompleta(fecha) {
 function testTotal() {
   Logger.clear();
   Logger.log('═══════════════════════════════════════════════════════');
-  Logger.log('INICIO DE PRUEBAS - SISTEMA DE ASISTENCIA V1.01');
+  Logger.log('INICIO DE PRUEBAS - SISTEMA DE ASISTENCIA V1.02');
   Logger.log('═══════════════════════════════════════════════════════\n');
   
   let totalPruebas = 0;
@@ -774,6 +779,7 @@ function testTotal() {
     if (resultado.success) {
       Logger.log('✅ Consulta de pendientes exitosa');
       Logger.log('   Cantidad de registros pendientes: ' + resultado.pendientes.length);
+      Logger.log('   Total pendiente: S/' + resultado.totalPendiente);
       
       if (resultado.pendientes.length > 0) {
         Logger.log('   Primeros 3 registros:');
